@@ -10,7 +10,6 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         List<String> inputS = new ArrayList<String>();
         HashMap<String, String> estadosRelaciones = new HashMap<String, String>();
-        int i1 = 0;
 
         //Lectura del archivo
         try (BufferedReader br = Files.newBufferedReader(Paths.get(args[0]))) {
