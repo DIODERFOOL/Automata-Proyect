@@ -11,9 +11,7 @@ public class Main {
         List<String> inputS = new ArrayList<String>();
         HashMap<String, String> estadosRelaciones = new HashMap<>();
         HashMap<String, String> resultado;
-        LinkedList<String> alphabet;
-
-        DfaBuilder builder = new DfaBuilder();
+        LinkedList<String> alpha = new LinkedList<>();
 
         //Lectura del archivo
         try (BufferedReader br = Files.newBufferedReader(Paths.get(args[0]))) {
@@ -30,6 +28,17 @@ public class Main {
         }
         //Termina lectura del archivo
 
+        //Guardar el alfabeto
+        Iterator iter1 = inputS.listIterator(1);
+
+        //Llenado del hashmap
+        if (iter1.hasNext()) {
+            String[] strTemp = iter1.next().toString().split(",");
+            for (String a : strTemp) {
+                alpha.add(a);
+            }
+        }
+
         //HashMap Relaciones entre estados
         Iterator iter = inputS.listIterator(4);
 
@@ -39,7 +48,10 @@ public class Main {
             estadosRelaciones.put(strTemp[0], strTemp[1]);
         }
 
-        resultado = builder.builderDfa(estadosRelaciones);
+        //Creacion del objeto que contruye el dfa
+        DfaBuilder builder = new DfaBuilder();
+
+        resultado = builder.builderDfa(estadosRelaciones, alpha);
 
         System.out.println(resultado);
 
