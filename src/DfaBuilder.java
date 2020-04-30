@@ -1,14 +1,28 @@
-import javax.print.DocFlavor;
+/**
+ * This class provides the methods necessary
+ * to build a DFA from an original NDFA
+ * an return it as a hashMap
+ *
+ * @author Alejandro López Martínez - A01173657
+ * @author José Domingo Cruz Núñez - A01655701
+ */
+
 import java.util.*;
 
 public class DfaBuilder {
     static HashMap<String, String> res = new HashMap<>();
     static HashMap<String, String> resCopy = new HashMap<>();
 
+    /**
+     * The method for building the resulting DFA
+     * from an existent NDFA
+     *
+     * @param {HashMap} original
+     * @param {LinkedList} alphabet
+     * @return
+     */
     public static HashMap<String, String> builderDfa(HashMap<String, String> original, LinkedList<String> alphabet) {
         HashMap<String, String> resL;
-
-
         for (Map.Entry<String, String> entry : original.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -22,23 +36,27 @@ public class DfaBuilder {
         }
 
         resL = buildDFA(res,original,alphabet);
-
-
-        //resL = searchAllSetOfRelation(hashTemp, original, alpha);
         resL.putAll(res);
-        //hashTemp.putAll(resL);
 
         return resL;
     }
 
-    public static String[] searchRelation(String key, String relation, HashMap<String, String> original, String alpha) {
+    /**
+     * Method use to create the transition table of the DFA
+     * using as input the transition table of the original NDFA
+     *
+     * @param {String} relation
+     * @param {HasMap} original
+     * @param {String} alpha
+     * @return resulting hashmap of the final dfa
+     */
+    public static String[] searchRelation(String relation, HashMap<String, String> original, String alpha) {
         String[] resTemp = new String[2];
         LinkedList<String> ar = new LinkedList<>();
         StringBuilder sb = new StringBuilder();
         String keyLetter = "";
 
         try {
-            //String[] value = key.split(",");
             String[] temp = relation.split(",");
 
             for (String temp2 : temp) {
@@ -71,25 +89,32 @@ public class DfaBuilder {
         return resTemp;
     }
 
-    public static HashMap<String, String> buildDFA(HashMap<String,String> res,HashMap<String,String> original, LinkedList<String> alphabet) {
+    /**
+     * Method use for building the transition table from the original NDFA
+     * to a DFA as a result
+     * @param res
+     * @param original
+     * @param alphabet
+     * @return
+     */
+    public static HashMap<String, String> buildDFA(HashMap<String,String> res, HashMap<String,String> original, LinkedList<String> alphabet) {
         String[] hashValueTemp;
         HashMap<String,String> hashTemporal = new HashMap<>();
 
         for (Map.Entry<String, String> entry : res.entrySet()) {
-            String key = entry.getKey();
             String relation = entry.getValue();
-
-            if (res.containsKey( res.get(relation+",a") + ",a" ) || res.containsKey( res.get(relation+",a")+",b" ) ) {
-                return res;
-            } else {
-                for (String a : alphabet) {
-                    hashValueTemp = searchRelation(key, relation, original, a);
+            //Caso Base
+            for(String a : alphabet) {
+                if (res.containsKey( res.get(relation+ "," + a) + "," + a)  ) {
+                    return res;
+            }
+                for (String b : alphabet) {
+                    hashValueTemp = searchRelation(relation, original, b);
                     hashTemporal.put(hashValueTemp[0], hashValueTemp[1]);
                 }
             }
         }
         resCopy.putAll(hashTemporal);
-
         return buildDFA(resCopy, original, alphabet);
     }
 }
